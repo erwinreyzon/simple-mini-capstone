@@ -42,6 +42,13 @@ export default {
         console.log("Product Update", response.data);
       });
     },
+    destroyProduct: function (product) {
+      axios.delete("http://localhost:3000/products/" + product.id).then((response) => {
+        console.log("Product Destroyed", response.data);
+        var index = this.products.indexOf(product);
+        this.products.splice(index, 1);
+      });
+    },
   },
 };
 </script>
@@ -90,7 +97,12 @@ export default {
             Price:
             <input type="text" v-model="currentProduct.price" />
           </p>
+          <p>
+            Image URL:
+            <input type="text" v-model="currentProduct.image_url" />
+          </p>
           <button v-on:click="updateProduct(currentProduct)">Update</button>
+          <button v-on:click="destroyProduct(currentProduct)">Destroy</button>
           <button>Close</button>
         </form>
       </dialog>
