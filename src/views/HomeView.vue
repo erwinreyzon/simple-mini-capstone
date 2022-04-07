@@ -9,6 +9,7 @@ export default {
       name: "Erwin",
       products: [],
       paramsProduct: {},
+      currentProduct: {},
     };
   },
   created: function () {
@@ -29,6 +30,17 @@ export default {
           this.products.push(response.data);
         })
         .catch((error) => console.log(error.response));
+    },
+    showProduct: function (product) {
+      console.log(product);
+      this.currentProduct = product;
+      document.querySelector("#product-details").showModal();
+    },
+    updateProduct: function (product) {
+      var editProductParams = product;
+      axios.patch("http://localhost:3000/products/" + product.id + ".json", editProductParams).then((response) => {
+        console.log("Product Update", response.data);
+      });
     },
   },
 };
@@ -55,11 +67,33 @@ export default {
 
     <div v-for="product in products" v-bind:key="product.id">
       <p>Name: {{ product.name }}</p>
-      <p>Price: {{ product.price }}</p>
-      <p>Description: {{ product.description }}</p>
+      <!-- <p>Price: {{ product.price }}</p>
+      <p>Description: {{ product.description }}</p> -->
       <!-- <img v-bind:src="product.image_url" /> -->
       <!-- same as above but does require v-bind to be typed in with alt for name if image doesn't load -->
       <img :src="product.image_url" :alt="product.name" />
+      <div>
+        <button v-on:click="showProduct(product)">More Info</button>
+      </div>
+      <dialog id="product-details">
+        <form method="dialog">
+          <h2>Product Info</h2>
+          <p>
+            Name:
+            <input type="text" v-model="currentProduct.name" />
+          </p>
+          <p>
+            Description:
+            <input type="text" v-model="currentProduct.description" />
+          </p>
+          <p>
+            Price:
+            <input type="text" v-model="currentProduct.price" />
+          </p>
+          <button v-on:click="updateProduct(currentProduct)">Update</button>
+          <button>Close</button>
+        </form>
+      </dialog>
     </div>
   </div>
 </template>
